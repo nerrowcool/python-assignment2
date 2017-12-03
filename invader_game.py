@@ -13,13 +13,11 @@ import turtle
     Constants and variables
 """
 
-# Set up the backgound turtle
-background = turtle.Turtle()
-turtle.addshape("bg.gif")
-background.shape("bg.gif")
 
 timer = 0
 enemy_stop = 0
+listening = 1
+
 # General parameters
 window_height = 600
 window_width = 600
@@ -100,12 +98,13 @@ def playermoveleft():
     # Get current player position
     x, y = player.position()
 
-    # Part 2.2 - Keeping the player inside the window
-    # Player should only be moved only if it is within the window range
-    if x - player_speed > -window_width / 2 + window_margin:
-        player.shape("spaceship_left.gif")
-        player.goto(x - player_speed, y)
-    turtle.update() # delete this line after finishing updatescreen()
+    if listening:
+        # Part 2.2 - Keeping the player inside the window
+        # Player should only be moved only if it is within the window range
+        if x - player_speed > -window_width / 2 + window_margin:
+            player.shape("spaceship_left.gif")
+            player.goto(x - player_speed, y)
+        turtle.update() # delete this line after finishing updatescreen()
 
 # This function is run when the "Right" key is pressed. The function moves the
 # player to the right when the player is within the window area
@@ -114,13 +113,14 @@ def playermoveright():
     # Get current player position
     x, y = player.position()
 
-    # Part 2.2 - Keeping the player inside the window
-    # Player should only be moved only if it is within the window range
-    if x + player_speed < window_width / 2 - window_margin:
-        player.shape("spaceship_right.gif")
-        player.goto(x + player_speed, y)
+    if listening:
+        # Part 2.2 - Keeping the player inside the window
+        # Player should only be moved only if it is within the window range
+        if x + player_speed < window_width / 2 - window_margin:
+            player.shape("spaceship_right.gif")
+            player.goto(x + player_speed, y)
 
-    turtle.update() # delete this line after finishing updatescreen()
+        turtle.update() # delete this line after finishing updatescreen()
 
 """
     Handle the screen update and enemy movement
@@ -176,7 +176,7 @@ def updatescreen():
         else:
             enemy.shape("enemy2.gif")
 
-    # Show and move bonus enemy every 6 seconds
+    # Show and move bonus enemy every 2 seconds
     if timer % 240 == 0 and timer != 0:
         bonus.goto(bonus_init_x, bonus_init_y)
         bonus.showturtle()
@@ -319,11 +319,20 @@ def gamestart(x, y):
 
     # Set up the score area 
     labels.clear()
-    labels.goto(-50, 275)
+    labels.goto(-295, 275)
+    labels.fillcolor("white")
+    labels.begin_fill()
+    for _ in range(4):
+        labels.forward(90)
+        labels.left(90)
+        labels.forward(20)
+        labels.left(90)
+    labels.end_fill()
+    labels.goto(-290, 275)
     labels.write("Score:", font=("System", 15, "bold"))
     # Score board
     score.up()
-    score.goto(10, 275)
+    score.goto(-240, 275)
     score.color("dark blue")
     score.write(player_score, font=("System", 15, "bold"))
 
@@ -396,10 +405,12 @@ def gamestart(x, y):
 """
     Game over
 """
-
 # This function shows the game over message.
 def gameover(message):
     
+    global listening
+    listening = 0
+
     # Part 5.3 - Improving the gameover() function
     noti = turtle.Turtle()
     noti.hideturtle()
@@ -421,7 +432,7 @@ def decrease_enemy_number(x, y):
 
 def increase_enemy_number(x, y):
     global enemy_number
-    if enemy_number < 48:
+    if enemy_number < 49:
         enemy_number += 1
         enemy_amount.clear()
         enemy_amount.write(str(enemy_number), font=("System", 18, "bold"), align="center")
@@ -433,7 +444,7 @@ def increase_enemy_number(x, y):
 
 # Set up the turtle window
 turtle.setup(window_width, window_height)
-turtle.bgcolor("Black")
+turtle.bgpic("bg.gif")
 turtle.up()
 turtle.hideturtle()
 turtle.tracer(False)
@@ -453,24 +464,25 @@ enemy_amount = turtle.Turtle()
 # Draw the start button
 start_button = turtle.Turtle()
 start_button.up()
-start_button.goto(-40, -180)
-start_button.color("white", "DarkGray")
+start_button.goto(-60, -220)
+start_button.color("pink", "deepskyblue")
 start_button.begin_fill()
 for _ in range(2):
-    start_button.forward(80)
+    start_button.forward(120)
     start_button.left(90)
-    start_button.forward(25)
+    start_button.forward(50)
     start_button.left(90)
 start_button.end_fill()
 
 # Write text on the button
-start_button.goto(0, -175)
-start_button.write("Start", font=("System", 12, "bold"), align="center")
+start_button.goto(0, -210)
+start_button.write("Start", font=("System", 20, "bold"), align="center")
 
 # Cover the image with start_button turtle
-start_button.goto(0, -168)
+start_button.showturtle()
+start_button.goto(0, -194)
 start_button.shape("square")
-start_button.shapesize(1.3, 4)
+start_button.shapesize(2.4, 5.9)
 start_button.color("")
     
 # Set up the title turtle
@@ -485,21 +497,21 @@ instruction.hideturtle()
 instruction.up()
 instruction.color("black")
 instruction.goto(0, -80)
-instruction.write("Instruction:\nMove left: left arrow key\nMove right: right arrow key\nShoot Daniel: spacebar\n\n   Kill all the monster Hello Kitty!"\
+instruction.write("Instruction:\nMove left: left arrow key\nMove right: right arrow key\nShoot Daniel: spacebar\n\n   Kill all the Hello Kitty monster!"\
 ,font=("System", 18), align=("center"))
 
 # Set up labels turtle
 labels.hideturtle()
 labels.up()
 labels.color("black")
-labels.goto(-200, -140)
-labels.write("Number of Enemies:", font=("System", 18, "bold"))
+labels.goto(-240, -140)
+labels.write("Number of Hello Kitty Monsters:", font=("System", 18, "bold"))
 
 # Set up enemy_amount turtle
 enemy_amount.hideturtle()
 enemy_amount.up()
 enemy_amount.color("black")
-enemy_amount.goto(108, -140)
+enemy_amount.goto(220, -140)
 enemy_amount.write(str(enemy_number), font=("System", 18, "bold"), align="center")
 
 # Set up left_arrow turtle
@@ -508,7 +520,7 @@ left_arrow.color("red")
 left_arrow.shapesize(0.75, 1.4)
 left_arrow.left(180)
 left_arrow.up()
-left_arrow.goto(85, -125)
+left_arrow.goto(195, -125)
 
 left_arrow.onclick(decrease_enemy_number)
 
@@ -517,7 +529,7 @@ right_arrow.shape("arrow")
 right_arrow.color("red")
 right_arrow.shapesize(0.75, 1.4)
 right_arrow.up()
-right_arrow.goto(130, -125)
+right_arrow.goto(240, -125)
 
 right_arrow.onclick(increase_enemy_number)
 
